@@ -1,0 +1,1 @@
+export const DEFAULT_MAP_CENTER_LONLAT = [37.62, 55.75];

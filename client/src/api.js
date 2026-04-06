@@ -1,5 +1,14 @@
+function apiOrigin() {
+  const fromEnv = import.meta.env.VITE_SERVER_URL;
+  if (typeof fromEnv === 'string' && fromEnv.trim() !== '') {
+    return fromEnv.replace(/\/$/, '');
+  }
+  return typeof window !== 'undefined' ? window.location.origin : '';
+}
+
 async function getJson(path, params = {}) {
-  const u = new URL(path, window.location.origin);
+  const base = apiOrigin();
+  const u = new URL(path.startsWith('/') ? path : `/${path}`, base || 'http://localhost');
   Object.entries(params).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') u.searchParams.set(k, String(v));
   });

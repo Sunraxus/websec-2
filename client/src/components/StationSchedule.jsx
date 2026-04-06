@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { stationSchedule } from '../api.js';
-import { formatBoardTime } from '../formatRoute.js';
+import { formatBoardTime } from '../utils/formatRoute.js';
 
 export function StationSchedule({ station, favorites, onToggleFavorite }) {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));

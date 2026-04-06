@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
+import { storageGet, storageSet } from '../utils/storage.js';
 
-const KEY = 'lab_fav_stops';
+const KEY = import.meta.env.VITE_FAVORITES_STORAGE_KEY || 'lab_fav_stops';
 
 function read() {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = storageGet(KEY, '');
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -17,7 +18,7 @@ export function useFavorites() {
   const [items, setItems] = useState(read);
 
   useEffect(() => {
-    localStorage.setItem(KEY, JSON.stringify(items));
+    storageSet(KEY, JSON.stringify(items));
   }, [items]);
 
   const add = useCallback((station) => {

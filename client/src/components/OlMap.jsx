@@ -5,18 +5,18 @@ import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
 import { fromLonLat, toLonLat } from 'ol/proj.js';
 import { nearestStations } from '../api.js';
+import { DEFAULT_MAP_CENTER_LONLAT } from '../config.js';
 
-const MOSCOW = fromLonLat([37.62, 55.75]);
+const DEFAULT_CENTER = fromLonLat(DEFAULT_MAP_CENTER_LONLAT);
 
 export function OlMap({ onMapClick, hint }) {
-  const hostRef = useRef(null);
-  const mapRef = useRef(null);
+  const mapContainerRef = useRef(null);
   const onMapClickRef = useRef(onMapClick);
   onMapClickRef.current = onMapClick;
 
   useEffect(() => {
-    const el = hostRef.current;
-    if (!el) return undefined;
+    const el = mapContainerRef.current;
+    if (!el) return;
 
     const map = new Map({
       target: el,
@@ -26,11 +26,10 @@ export function OlMap({ onMapClick, hint }) {
         }),
       ],
       view: new View({
-        center: MOSCOW,
+        center: DEFAULT_CENTER,
         zoom: 9,
       }),
     });
-    mapRef.current = map;
 
     map.on('singleclick', async (evt) => {
       const [lng, lat] = toLonLat(evt.coordinate);
@@ -41,17 +40,12 @@ export function OlMap({ onMapClick, hint }) {
         onMapClickRef.current?.({ lat, lng, stations: [] });
       }
     });
-
-    return () => {
-      map.setTarget(undefined);
-      mapRef.current = null;
-    };
   }, []);
 
   return (
     <div className="map-wrap">
       <p className="map-hint">{hint}</p>
-      <div ref={hostRef} className="map map--ol" />
+      <div ref={mapContainerRef} className="map map--ol" />
     </div>
   );
 }

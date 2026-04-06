@@ -5,6 +5,9 @@ import { StationSchedule } from './components/StationSchedule.jsx';
 import { RouteBetween } from './components/RouteBetween.jsx';
 import { Favorites } from './components/Favorites.jsx';
 import { useFavorites } from './hooks/useFavorites.js';
+import { storageGet, storageSet } from './utils/storage.js';
+
+const THEME_KEY = 'theme';
 
 export default function App() {
   const [tab, setTab] = useState('station');
@@ -12,16 +15,16 @@ export default function App() {
   const [mapPick, setMapPick] = useState(null);
   const { items: favItems, add, remove, has } = useFavorites();
 
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme] = useState(() => storageGet(THEME_KEY, 'dark'));
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.setProperty('color-scheme', theme === 'dark' ? 'dark' : 'light');
   }, [theme]);
 
   const applyTheme = useCallback((next) => {
     setTheme(next);
-    localStorage.setItem('theme', next);
+    storageSet(THEME_KEY, next);
   }, []);
 
   const onMapClick = useCallback((payload) => {

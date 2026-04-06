@@ -1,15 +1,8 @@
 import { useState } from 'react';
 import { routeBetween } from '../api.js';
-import { formatDurationSeconds, formatSegmentDateTime } from '../formatRoute.js';
+import { formatSegmentDateTime } from '../utils/formatRoute.js';
+import { segmentNote } from '../utils/segmentNote.js';
 import { StationAutocomplete } from './StationAutocomplete.jsx';
-
-function segmentNote(seg) {
-  const dur = formatDurationSeconds(seg.duration);
-  const stops = seg.stops;
-  if (dur && stops) return `${dur} · ${stops}`;
-  if (dur) return dur;
-  return stops || '—';
-}
 
 export function RouteBetween() {
   const [from, setFrom] = useState(null);
